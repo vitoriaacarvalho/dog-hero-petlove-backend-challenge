@@ -34,7 +34,6 @@ public class DogWalkingController {
 	public ResponseEntity<DogWalking> create(@RequestBody DogWalking dogWalking){
 		dogWalking.setSchedulingDate(LocalDate.now());
 		DogWalking entity=repo.save(dogWalking);
-		
 		return ResponseEntity.ok().body(entity);
 	}
 	

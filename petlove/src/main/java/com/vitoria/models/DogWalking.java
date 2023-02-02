@@ -12,6 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vitoria.enums.Status;
 import com.vitoria.enums.TimeStamp;
 
@@ -32,7 +33,6 @@ public class DogWalking {
 	private String latitude;
 	
 	private String longitude;
-	
 	@ManyToOne
 	@JoinColumn(name="pet_id")
 	private Pets pet;
