@@ -1,8 +1,9 @@
 package com.vitoria.models;
 
 import java.time.LocalDate;
-import java.time.LocalTime;
+import java.time.LocalDateTime;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -17,26 +18,36 @@ import com.vitoria.enums.TimeStamp;
 @Entity
 @Table(name="dog_walking")
 public class DogWalking {
-	
-	private LocalDate schedulingDate;
-	private Status status;
-	private TimeStamp timeStamp;
-	private String latitude;
-	private String longitude;
-	@ManyToOne
-	@JoinColumn(name="pet_id")
-	private Pets pet;
-	private LocalTime walkStartingTime;
-	private LocalTime walkFinishingTime;
 	@Id
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
+	
+	private LocalDate schedulingDate;
+	
+	@Column(nullable=true)
+	private Status status;
+	
+	private TimeStamp timeStamp;
+	
+	private String latitude;
+	
+	private String longitude;
+	
+	@ManyToOne
+	@JoinColumn(name="pet_id")
+	private Pets pet;
+	
+	private LocalDateTime walkStartingTime;
+	
+	private LocalDateTime walkFinishingTime;
+	private String duration;
+	
 	
 	public DogWalking() {
 	}
 
 	public DogWalking(LocalDate schedulingDate, Status status, TimeStamp timeStamp, String latitude, String longitude,
-			Pets pet, LocalTime walkStartingTime, LocalTime walkFinishingTime, Integer id) {
+			Pets pet,LocalDateTime walkStartingTime, LocalDateTime walkFinishingTime, Integer id, String duration) {
 		this.schedulingDate = schedulingDate;
 		this.status = status;
 		this.timeStamp = timeStamp;
@@ -46,6 +57,7 @@ public class DogWalking {
 		this.walkStartingTime = walkStartingTime;
 		this.walkFinishingTime = walkFinishingTime;
 		this.id = id;
+		this.duration=duration;
 	}
 
 	public LocalDate getSchedulingDate() {
@@ -96,19 +108,19 @@ public class DogWalking {
 		this.pet = pet;
 	}
 
-	public LocalTime getWalkStartingTime() {
+	public LocalDateTime getWalkStartingTime() {
 		return walkStartingTime;
 	}
 
-	public void setWalkStartingTime(LocalTime walkStartingTime) {
+	public void setWalkStartingTime(LocalDateTime walkStartingTime) {
 		this.walkStartingTime = walkStartingTime;
 	}
 
-	public LocalTime getWalkFinishingTime() {
+	public LocalDateTime getWalkFinishingTime() {
 		return walkFinishingTime;
 	}
 
-	public void setWalkFinishingTime(LocalTime walkFinishingTime) {
+	public void setWalkFinishingTime(LocalDateTime walkFinishingTime) {
 		this.walkFinishingTime = walkFinishingTime;
 	}
 	public Integer getId() {
@@ -117,5 +129,13 @@ public class DogWalking {
 
 	public void setId(Integer id) {
 		this.id = id;
+	}
+
+	public String getDuration() {
+		return duration;
+	}
+
+	public void setDuration(String duration) {
+		this.duration = duration;
 	}
 }
