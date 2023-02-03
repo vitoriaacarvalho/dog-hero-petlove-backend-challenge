@@ -31,22 +31,22 @@ public class Pets {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	
-	@OneToMany(mappedBy="id")
-	private List<DogWalking> walks;
+	@ManyToOne
+	@JoinColumn(name="walk_id")
+	private DogWalking walk;
 	
 
 	public Pets() {
 		
 	}
 	
-	public Pets(String name, String breed, Date birthDate,  Owners owner , Integer id,List<DogWalking> walks) {
+	public Pets(String name, String breed, Date birthDate,  Owners owner , Integer id,DogWalking walks) {
 		this.name = name;
 		this.breed = breed;
 		this.birthDate = birthDate;
 		this.owner = owner;
 		this.id = id;
-		this.walks=walks;
+		this.walk=walk;
 	}
 
 	/*@JsonProperty("flight_id") private void unpackNested(Integer flight_id) {
@@ -93,12 +93,12 @@ public class Pets {
 		this.id = id;
 	}
 
-	public List<DogWalking> getWalks() {
-		return walks;
+	public DogWalking getWalks() {
+		return walk;
 	}
 
-	public void setWalks(List<DogWalking> walks) {
-		this.walks = walks;
+	public void setWalks(DogWalking walks) {
+		this.walk = walk;
 	}
 	
 }

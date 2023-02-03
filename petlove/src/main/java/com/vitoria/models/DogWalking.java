@@ -2,17 +2,16 @@ package com.vitoria.models;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.vitoria.enums.Status;
 import com.vitoria.enums.TimeStamp;
 
@@ -33,9 +32,9 @@ public class DogWalking {
 	private String latitude;
 	
 	private String longitude;
-	@ManyToOne
-	@JoinColumn(name="pet_id")
-	private Pets pet;
+	
+	@OneToMany(mappedBy="id")
+	private List<Pets> pet;
 	
 	private LocalDateTime walkStartingTime;
 	
@@ -47,7 +46,7 @@ public class DogWalking {
 	}
 
 	public DogWalking(LocalDate schedulingDate, Status status, TimeStamp timeStamp, String latitude, String longitude,
-			Pets pet,LocalDateTime walkStartingTime, LocalDateTime walkFinishingTime, Integer id, String duration) {
+			List<Pets> pet,LocalDateTime walkStartingTime, LocalDateTime walkFinishingTime, Integer id, String duration) {
 		this.schedulingDate = schedulingDate;
 		this.status = status;
 		this.timeStamp = timeStamp;
@@ -100,11 +99,11 @@ public class DogWalking {
 		this.longitude = longitude;
 	}
 
-	public Pets getPet() {
+	public List<Pets> getPet() {
 		return pet;
 	}
 
-	public void setPet(Pets pet) {
+	public void setPet(List<Pets> pet) {
 		this.pet = pet;
 	}
 
