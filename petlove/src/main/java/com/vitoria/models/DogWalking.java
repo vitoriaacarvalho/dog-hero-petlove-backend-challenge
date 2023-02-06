@@ -38,7 +38,8 @@ public class DogWalking {
 	
 	
 	@OneToMany(mappedBy="id", fetch=FetchType.EAGER)
-	@JsonManagedReference
+	
+	@JsonManagedReference(value="pet-walks")
 	@JsonIgnore
 	private List<Pets> pet;
 	

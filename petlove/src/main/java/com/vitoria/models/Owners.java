@@ -34,7 +34,7 @@ public class Owners {
 	private String address;
 	 
 	@OneToMany(fetch=FetchType.LAZY,mappedBy="id")
-	@JsonManagedReference
+	@JsonManagedReference(value="pet-owners")
     @JsonIgnore
 	private List<Pets> pets;
 

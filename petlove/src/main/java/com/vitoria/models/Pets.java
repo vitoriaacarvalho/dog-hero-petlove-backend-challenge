@@ -22,7 +22,7 @@ public class Pets {
 	private Date birthDate;
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
-	@JsonBackReference
+	@JsonBackReference(value="pet-owners")
 	@JoinColumn(name = "owner_id")
 	private Owners owner;
 
@@ -33,7 +33,7 @@ public class Pets {
 	
 	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="walk_id")
-	@JsonBackReference
+	@JsonBackReference(value="pet-walks")
 	private DogWalking walk;
 	
 
