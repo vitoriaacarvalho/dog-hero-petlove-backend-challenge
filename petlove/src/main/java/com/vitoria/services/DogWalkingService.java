@@ -26,6 +26,7 @@ public class DogWalkingService {
 		}
 		return walk;
 	}
+	
 	public DogWalking checkIdAndStartingTime(Integer id) {
 		DogWalking walk=repo.findById(id).get();
 		if (walk==null  || walk.getWalkStartingTime()==null) {

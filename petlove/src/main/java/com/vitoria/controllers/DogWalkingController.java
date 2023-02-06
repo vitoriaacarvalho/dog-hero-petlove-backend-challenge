@@ -43,7 +43,11 @@ public class DogWalkingController {
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<DogWalking>> findAll(){
-		List<DogWalking> walks=repo.findByStatus();
+		List<DogWalking> walks=repo.findAllWhereStatusIsOpen();
+		if(walks==null) {
+			throw new ResponseStatusException(
+			           HttpStatus.NO_CONTENT, ("There are no opened walks right now"));
+		}
 		return ResponseEntity.ok().body(walks);
 	}
 	
