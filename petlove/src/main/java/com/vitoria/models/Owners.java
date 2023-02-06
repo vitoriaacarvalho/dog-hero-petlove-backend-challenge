@@ -11,6 +11,9 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 @Entity
 @Table(name="owners_table")
 public class Owners {
@@ -30,7 +33,9 @@ public class Owners {
 	@Column(nullable=false)
 	private String address;
 	 
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="owner")
+	@OneToMany(fetch=FetchType.LAZY,mappedBy="id")
+	@JsonManagedReference
+    @JsonIgnore
 	private List<Pets> pets;
 
 	

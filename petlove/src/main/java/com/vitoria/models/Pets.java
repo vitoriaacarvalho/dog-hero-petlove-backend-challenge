@@ -2,7 +2,9 @@ package com.vitoria.models;
 
 import java.util.Date;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -10,7 +12,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonBackReference;
 
 @Entity
 @Table(name="pets_table")
@@ -19,7 +21,8 @@ public class Pets {
 	private String breed;
 	private Date birthDate;
 	
-	@ManyToOne
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+	@JsonBackReference
 	@JoinColumn(name = "owner_id")
 	private Owners owner;
 
@@ -27,8 +30,10 @@ public class Pets {
 	@GeneratedValue(strategy=GenerationType.IDENTITY)
 	private Integer id;
 	
-	@ManyToOne
+	
+	@ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
 	@JoinColumn(name="walk_id")
+	@JsonBackReference
 	private DogWalking walk;
 	
 
@@ -89,11 +94,11 @@ public class Pets {
 		this.id = id;
 	}
 	
-	@JsonIgnore
+
 	public DogWalking getWalks() {
 		return walk;
 	}
-	@JsonIgnore
+
 	public void setWalks(DogWalking walks) {
 		this.walk = walk;
 	}

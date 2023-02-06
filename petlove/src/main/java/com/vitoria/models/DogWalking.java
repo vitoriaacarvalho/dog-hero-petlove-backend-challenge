@@ -6,12 +6,15 @@ import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import com.vitoria.enums.Status;
 import com.vitoria.enums.TimeStamp;
 
@@ -33,7 +36,10 @@ public class DogWalking {
 	
 	private String longitude;
 	
-	@OneToMany(mappedBy="id")
+	
+	@OneToMany(mappedBy="id", fetch=FetchType.EAGER)
+	@JsonManagedReference
+	@JsonIgnore
 	private List<Pets> pet;
 	
 	private LocalDateTime walkStartingTime;
