@@ -13,6 +13,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonCreator;
 
 @Entity
 @Table(name="pets_table")
@@ -38,16 +39,14 @@ public class Pets {
 	
 
 	public Pets() {
-		
 	}
 	
-	public Pets(String name, String breed, Date birthDate,  Owners owner , Integer id,DogWalking walks) {
+	@JsonCreator
+	public Pets(String name, String breed, Date birthDate,  Owners owner , Integer id) {
 		this.name = name;
 		this.breed = breed;
 		this.birthDate = birthDate;
-		this.owner = owner;
 		this.id = id;
-		this.walk=walk;
 	}
 
 	/*@JsonProperty("flight_id") private void unpackNested(Integer flight_id) {

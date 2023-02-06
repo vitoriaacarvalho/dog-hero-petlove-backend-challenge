@@ -11,6 +11,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 
@@ -42,14 +43,13 @@ public class Owners {
 	public Owners() {
 		
 	}
-	
-	public Owners(Integer id, String name, String phoneNumber, String email, String address, List<Pets> pets) {
+	@JsonCreator
+	public Owners(Integer id, String name, String phoneNumber, String email, String address) {
 		this.id = id;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
 		this.email = email;
 		this.address = address;
-		this.pets = pets;
 	}
 
 	public Integer getId() {

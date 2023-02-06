@@ -13,8 +13,10 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.vitoria.enums.Status;
 import com.vitoria.enums.TimeStamp;
 
@@ -51,11 +53,10 @@ public class DogWalking {
 	
 	public DogWalking() {
 	}
-
-	public DogWalking(LocalDate schedulingDate, Status status, TimeStamp timeStamp, String latitude, String longitude,
-			List<Pets> pet,LocalDateTime walkStartingTime, LocalDateTime walkFinishingTime, Integer id, String duration) {
+	@JsonCreator
+	public DogWalking(@JsonProperty("schedulingDate") LocalDate schedulingDate, @JsonProperty("timeStamp") TimeStamp timeStamp, @JsonProperty("latitude") String latitude, @JsonProperty("longitude") String longitude,
+			@JsonProperty("pets") List<Pets> pet, @JsonProperty("walkStartingTime") LocalDateTime walkStartingTime, @JsonProperty("walkFinishingTime")LocalDateTime walkFinishingTime, @JsonProperty("id") Integer id) {
 		this.schedulingDate = schedulingDate;
-		this.status = status;
 		this.timeStamp = timeStamp;
 		this.latitude = latitude;
 		this.longitude = longitude;
@@ -63,7 +64,6 @@ public class DogWalking {
 		this.walkStartingTime = walkStartingTime;
 		this.walkFinishingTime = walkFinishingTime;
 		this.id = id;
-		this.duration=duration;
 	}
 
 	public LocalDate getSchedulingDate() {
