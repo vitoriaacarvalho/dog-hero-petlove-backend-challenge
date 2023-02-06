@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.vitoria.exceptions.ResponseStatusException;
 import com.vitoria.models.DogWalking;
 import com.vitoria.repositories.DogWalkingRepository;
+import com.vitoria.services.DogWalkingService;
 
 @RestController
 @RequestMapping("/walks")
@@ -27,39 +28,34 @@ public class DogWalkingController {
 	@Autowired
 	private DogWalkingRepository repo;
 	
+	@Autowired 
+	private DogWalkingService service;
+	
 	DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 	
 	
 	@PostMapping("/insert")
 	public ResponseEntity<DogWalking> create(@RequestBody DogWalking dogWalking){
-		dogWalking.setSchedulingDate(LocalDate.now());
-		DogWalking entity=repo.save(dogWalking);
+		DogWalking entity=service.addingNewWalk(dogWalking);
+		repo.save(entity);
 		return ResponseEntity.ok().body(entity);
 	}
 	
 	@GetMapping("/all")
 	public ResponseEntity<List<DogWalking>> findAll(){
-		List<DogWalking> walks=repo.findAll();
+		List<DogWalking> walks=repo.findByStatus();
 		return ResponseEntity.ok().body(walks);
 	}
 	
 	@GetMapping("/show/{id}")
 	public ResponseEntity<Optional<DogWalking>> findById(@PathVariable Integer id){
-		Optional<DogWalking> walk=repo.findById(id);
-		if (walk==null) {
-			throw new ResponseStatusException(
-			           HttpStatus.NOT_FOUND, ("There's no walk registered under this id"));
-		}
+		Optional<DogWalking> walk=service.findById(id);
 		return ResponseEntity.ok().body(walk);
 	}
 	
 	@GetMapping("/start_walk")
 	public ResponseEntity<String> startWalk(DogWalking dogWalk){
-		DogWalking entity=repo.findById(dogWalk.getId()).get();
-		if (entity==null) {
-			throw new ResponseStatusException(
-			           HttpStatus.NOT_FOUND, ("There's no walk registered under this id"));
-		}
+		service.findById(dogWalk.getId());
 		dogWalk.setWalkStartingTime(LocalDateTime.now());
 		return ResponseEntity.ok().body("Walk successfully started!");
 		
@@ -67,21 +63,16 @@ public class DogWalkingController {
 
 	@GetMapping("/finish_walk")
 	public ResponseEntity<String> finishWalk(DogWalking dogWalk){
-		DogWalking entity=repo.findById(dogWalk.getId()).get();
-		if (entity==null || entity.getWalkStartingTime()==null) {
-			throw new ResponseStatusException(
-			           HttpStatus.BAD_REQUEST, ("This walk cannot be finished. It either does not exist or wasn't even started yet."));
-		}
+		service.checkIdAndStartingTime(dogWalk.getId());
 		dogWalk.setWalkFinishingTime(LocalDateTime.now());
 		dogWalk.setDuration(Long.toString(gettingRealDuration(dogWalk.getWalkStartingTime(),dogWalk.getWalkFinishingTime())));
 		return ResponseEntity.ok().body("Walk successfully finished!");
-		
 	}
 	
 	
 	private static long gettingRealDuration(LocalDateTime startingTime, LocalDateTime finishingTime) {
-		long diffInMilli = java.time.Duration.between(startingTime, finishingTime).toMillis();
-		long diffInSeconds = java.time.Duration.between(startingTime, finishingTime).getSeconds();
+		//long diffInMilli = java.time.Duration.between(startingTime, finishingTime).toMillis();
+		//long diffInSeconds = java.time.Duration.between(startingTime, finishingTime).getSeconds();
 		long diffInMinutes = java.time.Duration.between(startingTime, finishingTime).toMinutes();
 		return diffInMinutes;
 	}
