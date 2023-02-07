@@ -27,11 +27,11 @@ public class DogWalkingService {
 		return walk;
 	}
 	
-	public DogWalking checkIdAndStartingTime(Integer id) {
+	public DogWalking checkIdStartingTimeAndFinishingTime(Integer id) {
 		DogWalking walk=repo.findById(id).get();
-		if (walk==null  || walk.getWalkStartingTime()==null) {
+		if (walk==null  || walk.getWalkStartingTime()==null || walk.getWalkFinishingTime()!=null ) {
 			throw new ResponseStatusException(
-			           HttpStatus.NOT_FOUND, ("This walk cannot be finished. It either does not exist or wasn't even started yet."));
+			           HttpStatus.NOT_FOUND, ("This walk cannot be finished, either because it does not exist, it wasn't even started or it has already been closed."));
 		}
 		return walk;
 	}
@@ -40,4 +40,28 @@ public class DogWalkingService {
 		walk.setStatus(Status.OPEN);
 		return walk; 
 	}
+	
+	public DogWalking checkingIfWalkCanBeStarted(DogWalking walk) {
+		if(walk.getWalkStartingTime()!=null) {
+			throw new ResponseStatusException(
+			           HttpStatus.CONFLICT, ("This walk cannot be started right now because it has already been started."));
+		}
+		return walk;
+	}
+	
+	//
+	public DogWalking checkingIfWalkCanBeFinished(Integer id) {
+		DogWalking walk=repo.findById(id).get();
+		if(walk.getWalkFinishingTime()!=null) {
+			throw new ResponseStatusException(
+			           HttpStatus.CONFLICT, ("This walk cannot be finished right now because it has already been finished."));
+		}
+		return walk;
+	}
+	
+	
+	
+	
+	
+	
 }

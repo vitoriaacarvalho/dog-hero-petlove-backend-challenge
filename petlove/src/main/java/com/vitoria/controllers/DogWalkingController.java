@@ -1,6 +1,5 @@
 package com.vitoria.controllers;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -12,10 +11,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.vitoria.enums.Status;
 import com.vitoria.exceptions.ResponseStatusException;
 import com.vitoria.models.DogWalking;
 import com.vitoria.repositories.DogWalkingRepository;
@@ -37,12 +38,13 @@ public class DogWalkingController {
 	@PostMapping("/insert")
 	public ResponseEntity<DogWalking> create(@RequestBody DogWalking dogWalking){
 		DogWalking entity=service.addingNewWalk(dogWalking);
+		entity.setStatus(Status.OPEN);
 		repo.save(entity);
 		return ResponseEntity.ok().body(entity);
 	}
 	
-	@GetMapping("/all")
-	public ResponseEntity<List<DogWalking>> findAll(){
+	@GetMapping("/all/index")
+	public ResponseEntity<List<DogWalking>> findAllOpen(){
 		List<DogWalking> walks=repo.findAllWhereStatusIsOpen();
 		if(walks==null) {
 			throw new ResponseStatusException(
@@ -50,6 +52,17 @@ public class DogWalkingController {
 		}
 		return ResponseEntity.ok().body(walks);
 	}
+
+	@GetMapping("/all-walks")
+	public ResponseEntity<List<DogWalking>> findAll(){
+		List<DogWalking> walks=repo.findAll();
+		if(walks==null) {
+			throw new ResponseStatusException(
+			           HttpStatus.NO_CONTENT, ("There are no walks registered"));
+		}
+		return ResponseEntity.ok().body(walks);
+	}
+	
 	
 	@GetMapping("/show/{id}")
 	public ResponseEntity<Optional<DogWalking>> findById(@PathVariable Integer id){
@@ -57,21 +70,43 @@ public class DogWalkingController {
 		return ResponseEntity.ok().body(walk);
 	}
 	
-	@GetMapping("/start_walk")
-	public ResponseEntity<String> startWalk(DogWalking dogWalk){
-		service.findById(dogWalk.getId());
+	
+	@PutMapping("/start_walk/{id}")
+	public ResponseEntity<String> startWalk(@PathVariable Integer id){
+		DogWalking dogWalk=service.findById(id).get();
+		service.checkingIfWalkCanBeStarted(dogWalk);
 		dogWalk.setWalkStartingTime(LocalDateTime.now());
+		dogWalk.setStatus(Status.IN_MOTION);
+		repo.save(dogWalk);
 		return ResponseEntity.ok().body("Walk successfully started!");
 		
 	}
 
-	@GetMapping("/finish_walk")
-	public ResponseEntity<String> finishWalk(DogWalking dogWalk){
-		service.checkIdAndStartingTime(dogWalk.getId());
+	@PutMapping("/finish_walk/{id}")
+	public ResponseEntity<String> finishWalk(@PathVariable Integer id){
+		DogWalking dogWalk=service.checkIdStartingTimeAndFinishingTime(id);
 		dogWalk.setWalkFinishingTime(LocalDateTime.now());
 		dogWalk.setDuration(Long.toString(gettingRealDuration(dogWalk.getWalkStartingTime(),dogWalk.getWalkFinishingTime())));
+		dogWalk.setStatus(Status.CLOSED);
+		repo.save(dogWalk);
 		return ResponseEntity.ok().body("Walk successfully finished!");
 	}
+	
+	//this one HAS to be available for users
+	@PutMapping("/cancel-walk/{id}")
+	public ResponseEntity<String> cancelWalk(@PathVariable Integer id){
+		DogWalking walk=repo.findById(id).get();
+		walk.setStatus(Status.CANCELED);
+		repo.save(walk);
+		return ResponseEntity.ok().body("This walk was sucessfully canceled!");
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	
 	private static long gettingRealDuration(LocalDateTime startingTime, LocalDateTime finishingTime) {
