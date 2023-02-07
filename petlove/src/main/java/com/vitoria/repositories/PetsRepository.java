@@ -1,5 +1,9 @@
 package com.vitoria.repositories;
 
-public interface PetsRepository {
+import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.vitoria.models.Pets;
+
+public interface PetsRepository extends JpaRepository<Pets, Integer>{
 
 }

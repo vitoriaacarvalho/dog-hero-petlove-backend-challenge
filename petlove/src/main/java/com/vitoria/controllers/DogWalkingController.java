@@ -8,6 +8,7 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -102,12 +103,22 @@ public class DogWalkingController {
 		
 	}
 	
+	@PutMapping("/update")
+	public ResponseEntity<DogWalking> update(@PathVariable Integer id,@RequestBody DogWalking walk){
+		DogWalking updatedWalk=repo.findById(id).get();
+		updatedWalk.setLatitude(walk.getLatitude());
+		updatedWalk.setLongitude(walk.getLongitude());
+		updatedWalk.setDuration(walk.getDuration());
+		updatedWalk.setTimeStamp(walk.getTimeStamp());
+		repo.save(updatedWalk);
+		return ResponseEntity.ok().body(updatedWalk);
+	}
 	
-	
-	
-	
-	
-	
+	@DeleteMapping("/delete/{id}")
+	public ResponseEntity<Void> deleteById(@PathVariable Integer id){
+		repo.deleteById(id);
+		return ResponseEntity.noContent().build();
+	}
 	
 	private static long gettingRealDuration(LocalDateTime startingTime, LocalDateTime finishingTime) {
 		//long diffInMilli = java.time.Duration.between(startingTime, finishingTime).toMillis();
