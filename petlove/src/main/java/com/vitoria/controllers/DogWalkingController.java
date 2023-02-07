@@ -120,12 +120,19 @@ public class DogWalkingController {
 		return ResponseEntity.noContent().build();
 	}
 	
+	@DeleteMapping("/delete-all")
+	public ResponseEntity<Void> deleteAll(){
+		repo.deleteAll();
+		return ResponseEntity.noContent().build();
+	}
+	
 	private static long gettingRealDuration(LocalDateTime startingTime, LocalDateTime finishingTime) {
 		//long diffInMilli = java.time.Duration.between(startingTime, finishingTime).toMillis();
 		//long diffInSeconds = java.time.Duration.between(startingTime, finishingTime).getSeconds();
 		long diffInMinutes = java.time.Duration.between(startingTime, finishingTime).toMinutes();
 		return diffInMinutes;
 	}
+	
 	
 	
 	
