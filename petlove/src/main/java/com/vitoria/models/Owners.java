@@ -1,7 +1,9 @@
 package com.vitoria.models;
 
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -14,6 +16,7 @@ import javax.persistence.Table;
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 @Entity
 @Table(name="owners_table")
@@ -33,18 +36,23 @@ public class Owners {
 	
 	@Column(nullable=false)
 	private String address;
-	 
-	@OneToMany(fetch=FetchType.LAZY,mappedBy="id")
-	@JsonManagedReference(value="pet-owners")
+	
+	@OneToMany(fetch=FetchType.EAGER,mappedBy="id")
+    @JsonManagedReference(value="pet-owners")
     @JsonIgnore
-	private List<Pets> pets;
-
+	private Set<Pets> pets = new HashSet<>();
 	
 	public Owners() {
 		
 	}
+	/*
 	@JsonCreator
-	public Owners(Integer id, String name, String phoneNumber, String email, String address) {
+	public Owners (@JsonProperty("id") Integer id) {
+	    this.id =id;
+	}
+	*/
+	@JsonCreator
+	public Owners(@JsonProperty("id") Integer id,@JsonProperty("name") String name, @JsonProperty("phoneNumber") String phoneNumber,@JsonProperty("email") String email, @JsonProperty("address")String address) {
 		this.id = id;
 		this.name = name;
 		this.phoneNumber = phoneNumber;
@@ -92,11 +100,11 @@ public class Owners {
 		this.address = address;
 	}
 
-	public List<Pets> getPets() {
+	public Set<Pets> getPets() {
 		return pets;
 	}
 
-	public void setPets(List<Pets> pets) {
+	public void setPets(Set<Pets> pets) {
 		this.pets = pets;
 	}
 }
